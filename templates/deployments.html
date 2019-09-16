@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>KontrolPanel</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">KontrolPanel</a>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+        <div class="sidebar-sticky">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link active" href="/">
+                <span data-feather="box"></span>
+                Deployments <span class="sr-only">(current)</span>
+              </a>
+              <a class="nav-link" href="/configmaps">
+                <span data-feather="life-buoy"></span>
+                Configmaps <span class="sr-only"></span>
+              </a>
+              <a class="nav-link" href="/helm">
+                <span data-feather="map"></span>
+                Helm (BETA) <span class="sr-only"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Deployments</h1>
+
+        <div class="dropdown">
+          <h3 class="d-inline">Group by: </h3>
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Namespaces
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">Namespaces</a>
+          </div>
+        </div>
+      </div>
+
+      {% for item in pods %}
+      {% if item.pods|length > 0 %}
+      <div class="jumbotron">
+        <h4 class="display-5">Namespace: {{item.name}} ({{ item.pods|length }})</h4>
+
+        <div class="card-columns">
+          {% for pod in item.pods %}
+
+          <div class="card" style="max-width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">{{pod.name}}</h5>
+              <p class="card-text">
+                <b>Status:</b> {{pod.phase}}</br>
+                <b>Pod ip:</b> {{pod.ip}}
+              </p>
+              <a class="btn btn-primary restart-pod-btn" data-name="{{pod.name}}" data-namespace="{{item.name}}">Delete pod</a>
+              <a class="btn btn-secondary disabled" data-name="{{pod.name}}" data-namespace="{{item.name}}">View more</a>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">Started at: {{pod.started_at}}</small>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </main>
+  </div>
+
+    <!-- Bootstrap core JavaScript
+      ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+      <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/deployments.js') }}"></script>
+
+      <!-- Icons -->
+      <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+      <script>
+        feather.replace()
+      </script>
+
+    </body>
+    </html>
