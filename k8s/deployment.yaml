@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kontrolpanel-deployment
+  name: kontrolpanel
   namespace: default
   labels:
     app: kontrolpanel
@@ -15,18 +15,14 @@ spec:
       labels:
         app: kontrolpanel
     spec:
-      securityContext:
-        fsGroup: 412
       containers:
-      - name: kontrolpanel
-        image: kontrolpanel:latest
+      - name: kontrolpanel-backend-svc
+        image: kontrolpanel-backend-svc:latest
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8080    
-        volumeMounts:
-          - name: dockersock
-            mountPath: "/var/run/docker.sock"
-      volumes:
-      - name: dockersock
-        hostPath:
-          path: /var/run/docker.sock
+        - containerPort: 8080
+      - name: kontrolpanel-frontend-svc
+        image: kontrolpanel-frontend-svc:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8081

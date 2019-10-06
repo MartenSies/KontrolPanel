@@ -1,0 +1,3 @@
+[run]
+source = backend_svc
+omit = backend_svc/test*
