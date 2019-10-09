@@ -47,10 +47,12 @@ class Deployments extends React.Component {
   render() {
     const { error, isLoaded, items } = this.state;
     if (error) {
-      return (<div>
-        <Header title="Deployments" />
-        Unable to retrieve deployments
-      </div>);
+      return (
+        <div>
+          <Header title="Deployments" />
+          Unable to retrieve deployments
+        </div>
+      );
     } else if (!isLoaded) {
       return(
         <div>
@@ -64,8 +66,8 @@ class Deployments extends React.Component {
             <Header title="Deployments" />
             {items.map((namespace, ni) => {
               if(namespace.pods.length > 0)
-              return <div key={ni} className="jumbotron">
-                  <h4 className="display-5">Namespace: {namespace['name']} ({namespace.pods.length})</h4>
+              return <div key={ni} className="">
+                  <h5>{namespace['name']} ({namespace.pods.length})</h5>
                   <div className="card-columns">
                       {namespace.pods.map((pod, pi) => {
                         return <Pod key={pi} pod={pod}/>

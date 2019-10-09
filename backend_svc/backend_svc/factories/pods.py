@@ -15,11 +15,6 @@ class PodAPIResource(BaseFactory):
     def execute(self):
         return self.pod_service.list()
 
-    def create(self):
-        print(self.request.params)
-        return self.pod_service.create(request=self.request, name='grafana')
-
-
 
 class PodResource(dict):
 

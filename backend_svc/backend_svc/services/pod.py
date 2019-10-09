@@ -1,5 +1,6 @@
 from backend_svc.services import K8SService
 import yaml
+import requests
 
 class PodService(K8SService):
 
@@ -38,5 +39,7 @@ class PodService(K8SService):
             body=delete_options)
 
     def create(self, request, name):
-        with open(request.static_url('backend_svc:static/grafana.yaml'), 'r') as stream:
-            self.client.create_namespaced_pod(body=yaml.safe_load(stream), namespace="default")
+        return requests.post('http://on-demand-micro-services-deployment-on-demand-micro-services-de.default.svc.cluster.local:4000/install', json={
+          "chartName":"stable/fluentd",
+          "releaseName": "fluentd"
+        }).json()

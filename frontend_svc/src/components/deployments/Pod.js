@@ -24,7 +24,7 @@ class Pod extends React.Component {
     </div>;
 
     const button = <button 
-      className="btn btn-primary restart-pod-btn"
+      className="btn btn-primary"
       onClick={this.handleClick}
     >Delete pod</button>;
 
