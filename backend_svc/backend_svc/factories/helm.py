@@ -20,3 +20,6 @@ class ChartsResource(BaseFactory):
 
     def delete(self):
         return self.helm_service.delete(self.request.json_body)
+
+    def list(self):
+        return self.helm_service.list()
