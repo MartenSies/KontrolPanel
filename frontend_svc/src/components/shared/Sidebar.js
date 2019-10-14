@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { NavLink } from "react-router-dom";
-import { Box, LifeBuoy, Map } from 'react-feather';
+import { Wind, Zap, LifeBuoy, Map } from 'react-feather';
 
 function Sidebar() {
   return (
@@ -11,8 +11,12 @@ function Sidebar() {
             <ul className="nav flex-column">
               <li className="nav-item">
                 <NavLink to="/" activeClassName="active" className="nav-link" exact={true}>
-                  <Box className="feather" />
+                  <Zap className="feather" />
                   Deployments
+                </NavLink>
+                <NavLink to="/services" activeClassName="active" className="nav-link" exact={true}>
+                  <Wind className="feather" />
+                  Services
                 </NavLink>
                 <NavLink to="/configmaps" activeClassName="active" className="nav-link">
                   <LifeBuoy className="feather" />
@@ -20,7 +24,7 @@ function Sidebar() {
                 </NavLink>
                 <NavLink to="/helm" activeClassName="active" className="nav-link">
                   <Map className="feather" />
-                  Helm (BETA)
+                  Helm
                 </NavLink>
               </li>
             </ul>

@@ -40,12 +40,24 @@ class Chart extends React.Component {
       'stable/elasticsearch-exporter': 'elasticsearch.png',
     }
     this.state = { 
-      installed: props.status || false,
+      installed: this.isInstalled(this.props),
       loading: false
     };
+    this.isInstalled = this.isInstalled.bind(this);
     this.onButtonClick = this.onButtonClick.bind(this);
     this.installChart = this.installChart.bind(this);
     this.deleteChart = this.deleteChart.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      installed: this.isInstalled(nextProps),
+      loading: false
+    });
+  }
+
+  isInstalled(props) {
+    return props.installed_charts.includes(props.name.substring(props.name.lastIndexOf("/") + 1, props.name.length));
   }
 
   onButtonClick() {

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Deployments from './deployments/Deployments';
 import Configmaps from './configmaps/Configmaps';
+import Services from './services/Services';
 import Helm from './helm/Helm';
 
 import Navbar from './shared/Navbar';
@@ -25,6 +26,9 @@ function App() {
                 </Route>
                 <Route path="/configmaps">
                   <Configmaps />
+                </Route>
+                <Route path="/services">
+                  <Services />
                 </Route>
                 <Route path="/">
                   <Deployments />

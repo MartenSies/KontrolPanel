@@ -1,9 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: kontrolpanel
+  namespace: default
   labels:
     app: kontrolpanel
-  name: kontrolpanel-svc
 spec:
   type: LoadBalancer
   ports:

@@ -1,4 +1,8 @@
 import subprocess, re
+import logging
+
+log = logging.getLogger(__name__)
+
 
 class HelmService:
 
@@ -21,12 +25,21 @@ class HelmService:
     def install(self, params):
         return self._execute('install', params['chart_name'], '--name', params['release_name'])
 
-    def list(self):
-        return self._to_json(self._execute('search'))
+    def search(self, params):
+        keyword = params.get('keyword', '')
+        return self._to_json(self._execute('search', keyword))
+
+    def list_installed_charts(self):
+        return self._to_json(self._execute('list'))
 
     def _to_json(self, stdout):
         rows = stdout.split('\n')
-        headers = re.sub('  +', '', rows[0]).split('\t')
+        headers = re.sub('  +', '', rows.pop(0)).replace(' ', '_').lower().split('\t')
+
+        if len(rows) == 0:
+            return []
+
+        rows.pop() # remove the last item
         charts = [];
         for row in rows:
             chart = {}
