@@ -62,8 +62,7 @@ class Services extends React.Component {
     return (
       <div>
         <Header title="Services" />
-        {items.map((namespace, ni) => {
-          if(namespace.services.length > 0)
+        {items.filter(n => n.services.length > 0).map((namespace, ni) => {
           return <div key={ni}>
             <h5>{ namespace.name } ({ namespace.services.length })</h5>
             <div className="card-columns">

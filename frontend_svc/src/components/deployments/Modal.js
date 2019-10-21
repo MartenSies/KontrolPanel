@@ -6,7 +6,7 @@ class Modal extends React.Component {
 
     this.replicasRef = React.createRef();
     this.containerRefs = [];
-    this.props.deployment.containers.map((container, ci) => {
+    this.props.deployment.containers.forEach((container) => {
       this.containerRefs.push([React.createRef(), React.createRef()]);
     });
 
@@ -21,7 +21,8 @@ class Modal extends React.Component {
 
   updateReplicas() {
     var deployment = this.props.deployment
-    if (this.replicasRef.current.value == this.props.deployment.replicas) {
+    var value = parseInt(this.replicasRef.current.value, 10);
+    if (value === this.props.deployment.replicas) {
       return;
     }
     fetch('http://localhost:8080/api/v1/deployments/' + deployment.name + '/scale?namespace=' + deployment.namespace, {
@@ -31,14 +32,14 @@ class Modal extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        'replicas': parseInt(this.replicasRef.current.value, 10),
+        'replicas': value,
       })
     });
   }
 
   updateExposedContainers() {
     var deployment = this.props.deployment
-    this.containerRefs.map((containerRefs, ci) => {
+    this.containerRefs.forEach((containerRefs, ci) => {
       var body = {
         "name": deployment.containers[ci].name,
         "selector": deployment.labels,

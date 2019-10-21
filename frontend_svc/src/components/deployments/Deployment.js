@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import Card from '../shared/Card'
 import Modal from './Modal'
 
-import { Trash, Edit } from 'react-feather';
+import { Trash } from 'react-feather';
 
 const StyledListItem = styled.li`
     border-left: 0;

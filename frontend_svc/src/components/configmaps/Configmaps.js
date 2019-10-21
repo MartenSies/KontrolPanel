@@ -62,8 +62,7 @@ class Configmaps extends React.Component {
     return (
       <div>
         <Header title="Configmaps" />
-        {items.map((namespace, ni) => {
-          if(namespace.configmaps.length > 0)
+        { items.filter(n => n.configmaps.length > 0).map((namespace, ni) => {
           return <div key={ni} className="">
             <h5>{ namespace.name } ({ namespace.configmaps.length })</h5>
             <div className="card-columns">

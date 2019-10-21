@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components'
 
-import { Search } from 'react-feather';
-
 import IsLoading from '../shared/IsLoading'
 import Header from '../shared/Header'
 import Chart from './Chart'

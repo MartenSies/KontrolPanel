@@ -64,8 +64,7 @@ class Deployments extends React.Component {
       return (
         <div>
             <Header title="Deployments" />
-            {items.map((namespace, ni) => {
-              if(namespace.deployments.length > 0)
+            {items.filter(n => n.deployments.length > 0).map((namespace, ni) => {
               return <div key={ni} className="">
                   <h5>{namespace['name']} ({namespace.deployments.length})</h5>
                   <div className="card-columns">

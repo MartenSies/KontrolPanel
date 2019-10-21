@@ -12,7 +12,7 @@ class Card extends React.Component {
 
     let image = '';
     if (this.props.image) {
-      image = <img src={require("../../assets/" + (this.props.image))} className="card-img-top" style={{maxHeight: '250px' }} />
+      image = <img src={require("../../assets/" + (this.props.image))} alt="" className="card-img-top" style={{maxHeight: '250px' }} />
     }
 
     return (

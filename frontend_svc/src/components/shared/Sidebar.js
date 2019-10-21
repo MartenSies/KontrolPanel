@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { NavLink } from "react-router-dom";
-import { Wind, Zap, LifeBuoy, Map } from 'react-feather';
+import { Zap, Map } from 'react-feather';
 
 function Sidebar() {
   return (
