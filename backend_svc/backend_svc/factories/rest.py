@@ -3,6 +3,7 @@ from backend_svc.factories.pods import PodAPIResource
 from backend_svc.factories.configmaps import ConfigmapAPIResource
 from backend_svc.factories.helm import HelmAPIResource
 from backend_svc.factories.services import ServiceAPIResource
+from backend_svc.factories.deployments import DeploymentAPIResource
 
 
 class RestAPIResource(BaseFactory):
@@ -17,3 +18,4 @@ class Version1APIResource(BaseFactory):
         self['configmaps'] = ConfigmapAPIResource(parent=self, name='configmaps')
         self['services'] = ServiceAPIResource(parent=self, name='services')
         self['helm'] = HelmAPIResource(parent=self, name='helm')
+        self['deployments'] = DeploymentAPIResource(parent=self, name='deployments')

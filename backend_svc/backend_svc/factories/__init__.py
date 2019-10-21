@@ -4,3 +4,4 @@ class BaseFactory(dict):
         self.__name__ = name
         if parent is not None:
             self.request = parent.request
+        self.services = self.request.services

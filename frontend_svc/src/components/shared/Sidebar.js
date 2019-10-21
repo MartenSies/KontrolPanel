@@ -6,7 +6,7 @@ import { Wind, Zap, LifeBuoy, Map } from 'react-feather';
 function Sidebar() {
   return (
       <div className="row">
-        <nav className="col-md-2 d-none d-md-block bg-light sidebar">
+        <nav className="col-md-2 d-none d-md-block bg-light mt-5 sidebar">
           <div className="sidebar-sticky">
             <ul className="nav flex-column">
               <li className="nav-item">
@@ -14,14 +14,15 @@ function Sidebar() {
                   <Zap className="feather" />
                   Deployments
                 </NavLink>
-                <NavLink to="/services" activeClassName="active" className="nav-link" exact={true}>
+
+                {/*<NavLink to="/services" activeClassName="active" className="nav-link" exact={true}>
                   <Wind className="feather" />
                   Services
                 </NavLink>
                 <NavLink to="/configmaps" activeClassName="active" className="nav-link">
                   <LifeBuoy className="feather" />
                   Configmaps
-                </NavLink>
+                </NavLink>*/}
                 <NavLink to="/helm" activeClassName="active" className="nav-link">
                   <Map className="feather" />
                   Helm

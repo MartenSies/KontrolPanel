@@ -7,7 +7,10 @@ log = logging.getLogger(__name__)
 class HelmService:
 
     def __init__(self):
-        self._execute('init', '--client-only')
+        try:
+            self._execute('init', '--client-only')
+        except OSError:
+            log.info('Error install helm')
 
     def _execute(self, command, *args):
         result = subprocess.run(

@@ -1,6 +1,5 @@
 from backend_svc.factories import BaseFactory
 
-from backend_svc.services.helm import HelmService
 
 class HelmAPIResource(BaseFactory):
 
@@ -13,25 +12,20 @@ class ChartsResource(BaseFactory):
 
     def __init__(self, parent, name):
         super().__init__(parent, name)
-        self.helm_service = HelmService() # TODO: create service factory
         self['installed'] = InstalledChartsResource(
-            parent=self, name='installed', service=self.helm_service)
+            parent=self, name='installed')
 
     def install(self):
-        return self.helm_service.install(self.request.json_body)
+        return self.services['helm'].install(self.request.json_body)
 
     def delete(self):
-        return self.helm_service.delete(self.request.json_body)
+        return self.services['helm'].delete(self.request.json_body)
 
     def search(self):
-        return self.helm_service.search(dict(self.request.params))
+        return self.services['helm'].search(dict(self.request.params))
 
 
 class InstalledChartsResource(BaseFactory):
 
-    def __init__(self, parent, name, service):
-        super().__init__(parent, name)
-        self.helm_service = service
-
     def list_installed_charts(self):
-        return self.helm_service.list_installed_charts()
+        return self.services['helm'].list_installed_charts()

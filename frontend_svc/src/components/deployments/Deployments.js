@@ -2,7 +2,7 @@ import React from 'react';
 
 import IsLoading from '../shared/IsLoading'
 import Header from '../shared/Header'
-import Pod from './Pod'
+import Deployment from './Deployment'
 
 class Deployments extends React.Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class Deployments extends React.Component {
   }
 
   retrieveData() {
-    fetch("http://localhost:8080/api/v1/pods")
+    fetch("http://localhost:8080/api/v1/deployments")
       .then(res => res.json())
       .then(
         (result) => {
@@ -65,12 +65,12 @@ class Deployments extends React.Component {
         <div>
             <Header title="Deployments" />
             {items.map((namespace, ni) => {
-              if(namespace.pods.length > 0)
+              if(namespace.deployments.length > 0)
               return <div key={ni} className="">
-                  <h5>{namespace['name']} ({namespace.pods.length})</h5>
+                  <h5>{namespace['name']} ({namespace.deployments.length})</h5>
                   <div className="card-columns">
-                      {namespace.pods.map((pod, pi) => {
-                        return <Pod key={pi} pod={pod}/>
+                      {namespace.deployments.map((deployment, di) => {
+                        return <Deployment key={di} deployment={deployment}/>
                       })}
                   </div>
               </div>
