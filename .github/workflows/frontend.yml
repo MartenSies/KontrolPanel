@@ -1,6 +1,9 @@
 name: Frontend Service CI
 
-on: [push]
+on:
+  push:
+    paths:
+    - 'frontend_svc/**.js'
 
 jobs:
   build:
