@@ -1,5 +1,6 @@
 
 import os
+import sys
 import subprocess
 
 from distutils.core import Command
@@ -42,7 +43,7 @@ class PyTest(Command):
                              '--cov', 'test',
                              'test'])
 
-        raise SystemExit(errno)
+        raise sys.exit(errno)
 
 
 setup(
