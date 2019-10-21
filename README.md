@@ -1,3 +1,5 @@
+![](https://github.com/MartenSies/KontrolPanel/workflows/Frontend%20Service%20CI/badge.svg)
+
 # KontrolPanel
 
 ## Installation
