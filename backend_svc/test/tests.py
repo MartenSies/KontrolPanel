@@ -1,7 +1,7 @@
-import unittest
-from unittest import mock
+from unittest import TestCase, mock
 
-class DeploymentServiceTests(unittest.TestCase):
+
+class DeploymentServiceTests(TestCase):
 
     @mock.patch(
     	'backend_svc.services.deployment.DeploymentService.__init__', mock.Mock(return_value=None))
