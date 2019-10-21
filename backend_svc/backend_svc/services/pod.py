@@ -14,8 +14,6 @@ class PodService(K8SService):
             item = { 'name': namespace.metadata.name, 'pods': [] }
             pods = self.core_api.list_namespaced_pod(namespace.metadata.name, watch=False)
             for pod in pods.items:
-                if pod.metadata.namespace == 'default':
-                    log.info(pod)
                 item['pods'].append({
                     'ip': pod.status.pod_ip,
                     'phase': pod.status.phase,
