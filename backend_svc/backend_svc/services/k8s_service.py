@@ -15,7 +15,7 @@ class K8SService:
         self.apps_v1_api = client.AppsV1Api()
         self.registration_api = client.ApiregistrationV1Api()
 
-	def load_config(self):
+    def load_config(self):
         try:
             config.load_incluster_config()
         except:
