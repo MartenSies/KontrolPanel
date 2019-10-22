@@ -5,9 +5,14 @@ class Modal extends React.Component {
     super(props);
 
     this.replicasRef = React.createRef();
-    this.containerRefs = [];
+    this.containers = [];
     this.props.deployment.containers.forEach((container) => {
-      this.containerRefs.push([React.createRef(), React.createRef()]);
+      this.containers.push({
+        name: container.name,
+        ports: container.ports,
+        localPortRef: React.createRef(),
+        targetPortRef: React.createRef(),
+      });
     });
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -39,17 +44,16 @@ class Modal extends React.Component {
 
   updateExposedContainers() {
     var deployment = this.props.deployment
-    this.containerRefs.forEach((containerRefs, ci) => {
+    this.containers.forEach((container, ci) => {
       var body = {
-        "name": deployment.containers[ci].name,
+        "name": container.name,
         "selector": deployment.labels,
         "port": {
-          "local": parseInt(containerRefs[0].current.value, 10),
-          "target": parseInt(containerRefs[1].current.value, 10),
+          "local": parseInt(container.localPortRef.current.value, 10),
+          "target": parseInt(container.targetPortRef.current.value, 10),
         }
       }
-      console.log(body)
-      containerRefs[0].current.value ?
+      container.localPortRef.current.value ?
       this.exposeContainer(body) :
       this.stopExposingContainer(body);
     });
@@ -106,12 +110,12 @@ class Modal extends React.Component {
                   </div>
 
                   <span><b>Expose containers</b></span>
-                  {this.props.deployment.containers.map((container, ci) => {
+                  {this.containers.map((container, ci) => {
                     return <div key={ci} className="form-group d-flex justify-content-between">
                       <label className="col-form-label">{container.name}</label>
                         <div className="d-flex">
-                          <input type="number" className="form-control" ref={this.containerRefs[ci][0]} placeholder="Local" />
-                          <select className="form-control ml-1" ref={this.containerRefs[ci][1]}>
+                          <input type="number" className="form-control" ref={container.localPortRef} placeholder="Local" />
+                          <select className="form-control ml-1" ref={container.targetPortRef}>
                             { container.ports && container.ports.map((port, pi) => {
                               return <option key={pi}>{port.container_port}</option>
                             })}
