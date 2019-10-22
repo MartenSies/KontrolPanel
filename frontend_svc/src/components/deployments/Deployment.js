@@ -34,13 +34,34 @@ class Pod extends React.Component {
     })
   }
 
+  getPodStatus(status) {
+    var statusIconClass = ""
+    switch(status) {
+      case "Pending":
+        statusIconClass = "badge-warning"
+        break;
+      case "Running":
+      case "Succeeded":
+        statusIconClass = "badge-success"
+        break; 
+      case "Failed":
+        statusIconClass = "badge-danger"
+        break;
+      case "Unknown":
+      default:
+        statusIconClass = "badge-secondary"
+        break;
+    };
+    return statusIconClass;
+  }
+
   render() {
     const body = <div className="mb-2">
           <ul className="list-group">
             {this.props.deployment.pods.map((pod, pi) => {
               return <StyledListItem key={pi} className="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                 <StatusIcon className="mr-1 badge-success" />
+                <div> 
+                 <StatusIcon className={"mr-1 " + this.getPodStatus(pod.status) } />
                  <span>{pod.name}</span>
                 </div>
                  <Trash className="feather mr-1" data-name={pod.name} onClick={this.handleClick} />

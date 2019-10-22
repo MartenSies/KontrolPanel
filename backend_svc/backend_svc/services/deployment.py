@@ -65,7 +65,8 @@ class DeploymentService(K8SService):
         pods = []
         for pod in api_pods.items:
             pods.append({
-                'name': pod.metadata.name
+                'name': pod.metadata.name,
+                'status': pod.status.phase  # Pending, Running, Succeeded, Failed, Unknown
             })
         return pods
 
@@ -73,7 +74,6 @@ class DeploymentService(K8SService):
         services = []
         for service in api_services.items:
             if service.spec.type == 'LoadBalancer':
-                log.info(service)
                 services.append({
                     'name': service.metadata.name,
                     'ports': service.spec.ports
