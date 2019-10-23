@@ -30,6 +30,9 @@ class DeploymentService(K8SService):
             data.append(item)
         return data
 
+    def delete(self, namespace, name):
+        return self.apps_v1_api.delete_namespaced_deployment(name, namespace)
+
     def scale(self, namespace, name, params):
         value = params.get('replicas', 1) # default to 1 replica
         body = [{"op":"replace","path":"/spec/replicas","value": value}]
@@ -53,7 +56,10 @@ class DeploymentService(K8SService):
             "type": "LoadBalancer"
           }
         }
-        return self.core_api.create_namespaced_service("default", body)
+        return self.core_api.create_namespaced_service(namespace, body)
+
+    def delete_expose(self, namespace, name, params):
+        return self.core_api.delete_namespaced_service(f"{params.get('name', name)}-service", namespace)
 
     def _format_labels(self, api_labels):
         labels = ''
@@ -76,7 +82,7 @@ class DeploymentService(K8SService):
             if service.spec.type == 'LoadBalancer':
                 services.append({
                     'name': service.metadata.name,
-                    'ports': service.spec.ports
+                    'ports': service.spec.ports or []
                 })
         return services
 
@@ -87,6 +93,6 @@ class DeploymentService(K8SService):
                 'image': container.image,
                 'image_pull_policy': container.image_pull_policy,
                 'name': container.name,
-                'ports': container.ports
+                'ports': container.ports or []
             })
         return containers

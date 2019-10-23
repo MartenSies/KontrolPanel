@@ -8,6 +8,13 @@ def deployment_list(request):
     return request.context.execute()
 
 @view_config(
+    request_method='DELETE',
+    context='backend_svc.factories.deployments.DeploymentResource',
+    renderer='json')
+def deployment_delete(request):
+    return request.context.delete()
+
+@view_config(
     request_method='PATCH',
     context='backend_svc.factories.deployments.DeploymentScaleResource',
     renderer='json')
@@ -20,3 +27,10 @@ def deployment_scale(request):
     renderer='json')
 def deployment_expose(request):
     return request.context.expose()
+
+@view_config(
+    request_method='DELETE',
+    context='backend_svc.factories.deployments.DeploymentExposeResource',
+    renderer='json')
+def deployment_delete_expose(request):
+    return request.context.delete()

@@ -4,18 +4,47 @@ class Modal extends React.Component {
   constructor(props) {
     super(props);
 
+    this.modalRef = React.createRef();
     this.replicasRef = React.createRef();
+
     this.containers = [];
     this.props.deployment.containers.forEach((container) => {
+      var ports = [];
+      container.ports.forEach((port) => {
+        ports.push({
+          targetPort: port.container_port,
+          localPort: this.getLocalPort(port.container_port),
+          localPortRef: React.createRef()
+        });
+      });
       this.containers.push({
         name: container.name,
-        ports: container.ports,
-        localPortRef: React.createRef(),
-        targetPortRef: React.createRef(),
+        ports: ports,
       });
     });
 
+    this.onDelete = this.onDelete.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  getLocalPort(targetPort) {
+    var localPort = ''
+    this.props.deployment.load_balancers.forEach(loadBalancer => {
+      loadBalancer.ports.forEach(port => {
+        if (port.target_port === targetPort) {
+          localPort = port.port
+        }
+      })
+    })
+    return localPort;
+  }
+
+  onDelete(e) {
+    e.preventDefault();
+    var url = 'http://localhost:8080/api/v1/deployments/' + this.props.deployment.name + '?namespace=' + this.props.deployment.namespace;
+    fetch(url, {
+      method: 'DELETE',
+    });
   }
 
   onSubmit(e) {
@@ -44,18 +73,23 @@ class Modal extends React.Component {
 
   updateExposedContainers() {
     var deployment = this.props.deployment
-    this.containers.forEach((container, ci) => {
-      var body = {
-        "name": container.name,
-        "selector": deployment.labels,
-        "port": {
-          "local": parseInt(container.localPortRef.current.value, 10),
-          "target": parseInt(container.targetPortRef.current.value, 10),
+    this.containers.forEach((container) => {
+      container.ports.forEach((port) => {
+        var inputPort = port.localPortRef.current.value ? parseInt(port.localPortRef.current.value, 10) : ''
+        if (inputPort !== port.localPort) {
+          var body = {
+            "name": container.name,
+            "selector": deployment.labels,
+            "port": {
+              "local": inputPort ? parseInt(inputPort, 10) : null,
+              "target": port.targetPort
+            }
+          }
+          inputPort ?
+          this.exposeContainer(body) :
+          this.stopExposingContainer(body);
         }
-      }
-      container.localPortRef.current.value ?
-      this.exposeContainer(body) :
-      this.stopExposingContainer(body);
+      });
     });
   }
 
@@ -85,7 +119,7 @@ class Modal extends React.Component {
 
   render() {
     return (
-        <div className="modal fade" id={this.props.deployment.name} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal fade" id={this.props.deployment.name} ref={this.modalRef}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -111,26 +145,24 @@ class Modal extends React.Component {
 
                   <span><b>Expose containers</b></span>
                   {this.containers.map((container, ci) => {
-                    return <div key={ci} className="form-group d-flex justify-content-between">
+                    return <div key={ci} className="form-group">
                       <label className="col-form-label">{container.name}</label>
-                        <div className="d-flex">
-                          <input type="number" className="form-control" ref={container.localPortRef} placeholder="Local" />
-                          <select className="form-control ml-1" ref={container.targetPortRef}>
-                            { container.ports && container.ports.map((port, pi) => {
-                              return <option key={pi}>{port.container_port}</option>
-                            })}
-                          </select>
-                        </div>
+                      { container.ports && container.ports.map((port, pi) => {
+                         return <div key={pi} className="d-flex mt-1">
+                            <input type="number" className="form-control" ref={port.localPortRef} defaultValue={port.localPort} placeholder="Local port" />
+                            <input type="number" className="form-control ml-1" disabled defaultValue={port.targetPort} />
+                          </div>
+                      })}
                     </div>
                   })}
                 </form>
               </div>
 
               <div className="modal-footer justify-content-between">
-                <button type="button" className="btn btn-danger">Delete</button>
+                <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={this.onDelete}>Delete</button>
                 <div>
-                <button type="button" className="btn btn-secondary mr-1" data-dismiss="modal">Cancel</button>
-                <button type="submit" className="btn btn-primary" data-dismiss="modal" onClick={this.onSubmit}>Save</button>
+                  <button type="button" className="btn btn-secondary mr-1" data-dismiss="modal">Cancel</button>
+                  <button type="submit" className="btn btn-primary" data-dismiss="modal" onClick={this.onSubmit}>Save</button>
                 </div>
               </div>
             </div>
