@@ -2,8 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Deployments from './deployments/Deployments';
-import Configmaps from './configmaps/Configmaps';
-import Services from './services/Services';
 import Helm from './helm/Helm';
 
 import Navbar from './shared/Navbar';
@@ -22,16 +20,10 @@ function App() {
             <main role="main" className="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
               <Switch>
                 <Route path="/helm">
-                  <Helm />
-                </Route>
-                <Route path="/configmaps">
-                  <Configmaps />
-                </Route>
-                <Route path="/services">
-                  <Services />
+                  <Helm/>
                 </Route>
                 <Route path="/">
-                  <Deployments />
+                  <Deployments/>
                 </Route>
               </Switch>
             </main>

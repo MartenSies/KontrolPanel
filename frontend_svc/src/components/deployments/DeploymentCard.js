@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components'
 
 import Card from '../shared/Card'
-import Modal from './Modal'
+import EditModal from './EditModal'
 
 import { Trash } from 'react-feather';
 
@@ -19,7 +19,7 @@ const StatusIcon = styled.span`
   display: inline-block;
 `
 
-class Pod extends React.Component {
+class DeploymentCard extends React.Component {
   constructor(props) {
     super(props);
 
@@ -57,17 +57,17 @@ class Pod extends React.Component {
 
   render() {
     const body = <div className="mb-2">
-          <ul className="list-group">
-            {this.props.deployment.pods.map((pod, pi) => {
-              return <StyledListItem key={pi} className="list-group-item d-flex justify-content-between align-items-center">
-                <div> 
-                 <StatusIcon className={"mr-1 " + this.getPodStatus(pod.status) } />
-                 <span>{pod.name}</span>
-                </div>
-                 <Trash className="feather mr-1" data-name={pod.name} onClick={this.handleClick} />
-              </StyledListItem>
-            })}
-          </ul>
+      <ul className="list-group">
+        {this.props.deployment.pods.map((pod, pi) => {
+          return <StyledListItem key={pi} className="list-group-item d-flex justify-content-between align-items-center">
+            <div> 
+             <StatusIcon className={"mr-1 " + this.getPodStatus(pod.status) } />
+             <span>{pod.name}</span>
+            </div>
+             <Trash className="feather mr-1" data-name={pod.name} onClick={this.handleClick} />
+          </StyledListItem>
+        })}
+      </ul>
     </div>;
 
     const button = <div>
@@ -75,7 +75,7 @@ class Pod extends React.Component {
         className="btn btn-primary btn-block"
         data-toggle="modal" data-target={"#" + this.props.deployment.name }
       >Edit deployment</button>
-      <Modal deployment={this.props.deployment} />
+      <EditModal deployment={this.props.deployment} />
     </div>;
 
     return <Card 
@@ -86,4 +86,4 @@ class Pod extends React.Component {
   }
 }
 
-export default Pod;
+export default DeploymentCard;

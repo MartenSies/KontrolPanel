@@ -2,7 +2,7 @@ import React from 'react';
 
 import IsLoading from '../shared/IsLoading'
 import Header from '../shared/Header'
-import Deployment from './Deployment'
+import DeploymentCard from './DeploymentCard'
 
 class Deployments extends React.Component {
     constructor(props) {
@@ -69,7 +69,7 @@ class Deployments extends React.Component {
                   <h5>{namespace['name']} ({namespace.deployments.length})</h5>
                   <div className="card-columns">
                       {namespace.deployments.map((deployment, di) => {
-                        return <Deployment key={di} deployment={deployment}/>
+                        return <DeploymentCard key={di} deployment={deployment}/>
                       })}
                   </div>
               </div>
