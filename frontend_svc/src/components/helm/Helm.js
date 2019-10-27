@@ -1,9 +1,10 @@
 import React from 'react';
-import styled from 'styled-components'
+import styled from 'styled-components';
 
-import IsLoading from '../shared/IsLoading'
-import Header from '../shared/Header'
-import Chart from './Chart'
+import { getCharts, getInstalledCharts } from '../../helpers/Api';
+import IsLoading from '../shared/IsLoading';
+import Header from '../shared/Header';
+import Chart from './Chart';
 
 
 const StyledSearchBar = styled.input`
@@ -19,23 +20,19 @@ class Helm extends React.Component {
       error: null,
       isLoaded: false,
       charts: [],
-      installed_charts: [],
+      installedCharts: [],
     };
     this.onChangeHandler = this.onChangeHandler.bind(this);
   }
 
   retrieveData(keyword) {
-    Promise.all([
-        fetch('http://localhost:8080/api/v1/helm/charts?keyword=' + keyword),
-        fetch('http://localhost:8080/api/v1/helm/charts/installed')
-    ])
-    .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
-    .then(([charts, installed_charts]) => this.setState({
-        error: null,
-        isLoaded: true,
-        charts,
-        installed_charts: installed_charts.map((chart) => chart['name'])
-    }));
+    Promise.all([getCharts(keyword), getInstalledCharts()])
+      .then(([charts, installed_charts]) => this.setState({
+          error: null,
+          isLoaded: true,
+          charts,
+          installedCharts: installed_charts.map((chart) => chart['name'])
+      }));
   }
 
   onChangeHandler(e) {
@@ -48,15 +45,15 @@ class Helm extends React.Component {
   }
 
   render() {
-    // const { error, isLoaded, charts, installed_charts } = this.state;
-    if (this.state.error) {
+    const { error, isLoaded, charts, installedCharts } = this.state;
+    if (error) {
       return (
         <div>
           <Header title="Helm charts" />
           Unable to retrieve helm charts
         </div>
       );
-    } else if (!this.state.isLoaded) {
+    } else if (!isLoaded) {
       return(
         <div>
           <Header title="Helm charts" />
@@ -75,8 +72,8 @@ class Helm extends React.Component {
           </div>
 
           <div className="card-columns" style={{ columnCount: 4}}>
-            {this.state.charts.map((chart, i) => {
-              return <Chart key={i} installed_charts={this.state.installed_charts} name={chart.name} description={chart.description} />
+            {charts.map((chart, i) => {
+              return <Chart key={i} installedCharts={installedCharts} name={chart.name} description={chart.description} />
             })}
           </div>
         </div>
@@ -86,5 +83,3 @@ class Helm extends React.Component {
 }
 
 export default Helm;
-
-

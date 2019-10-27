@@ -1,4 +1,6 @@
 import React from 'react';
+
+import { updateReplicas } from '../../helpers/Api';
 import FormGroup from '../shared/form/FormGroup';
 
 
@@ -23,17 +25,8 @@ class EditReplicas extends React.Component {
     }
   }
 
-  updateReplicas(deployment_name, namespace, value) {
-    fetch('http://localhost:8080/api/v1/deployments/' + deployment_name + '/scale?namespace=' + namespace, {
-      method: 'PATCH',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        'replicas': value,
-      })
-    });
+  updateReplicas(deploymentName, namespace, value) {
+    updateReplicas(deploymentName, namespace, { 'replicas': value });
   }
 
   render() {

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { deleteDeployment } from '../../helpers/Api'
 import Modal from '../shared/Modal';
 import Button from '../shared/Button';
 import Form from '../shared/form/Form';
@@ -63,11 +64,8 @@ class EditModal extends React.Component {
     return localPort;
   }
 
-  onDelete(e) {
-    var url = 'http://localhost:8080/api/v1/deployments/' + this.props.deployment.name + '?namespace=' + this.props.deployment.namespace;
-    fetch(url, {
-      method: 'DELETE',
-    });
+  onDelete() {
+    deleteDeployment(this.props.deployment.name, this.props.deployment.namespace);
   }
 
   onSubmit(e) {

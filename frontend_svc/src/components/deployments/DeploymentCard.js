@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
 
+import { deletePod } from '../../helpers/Api'
 import Card from '../shared/Card'
 import EditModal from './EditModal'
 
@@ -28,10 +29,7 @@ class DeploymentCard extends React.Component {
 
   handleClick(e) {
     e.preventDefault();
-    var url = 'http://localhost:8080/api/v1/pods/' + e.target.dataset.name + '?namespace=' + this.props.deployment.namespace;
-    fetch(url, {
-      method: 'DELETE',
-    })
+    deletePod(e.target.dataset.name, this.props.deployment.namespace);
   }
 
   getPodStatus(status) {

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { getDeployments } from '../../helpers/Api'
 import IsLoading from '../shared/IsLoading'
 import Header from '../shared/Header'
 import DeploymentCard from './DeploymentCard'
@@ -15,9 +16,7 @@ class Deployments extends React.Component {
   }
 
   retrieveData() {
-    fetch("http://localhost:8080/api/v1/deployments")
-      .then(res => res.json())
-      .then(
+    getDeployments().then(
         (result) => {
           this.setState({
             error: null,

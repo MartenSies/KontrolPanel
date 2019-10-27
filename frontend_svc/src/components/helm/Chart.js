@@ -1,6 +1,7 @@
 import React from 'react';
 
-import Card from '../shared/Card'
+import { installChart, deleteChart } from '../../helpers/Api';
+import Card from '../shared/Card';
 
 class Chart extends React.Component {
   constructor(props) {
@@ -57,7 +58,7 @@ class Chart extends React.Component {
   }
 
   isInstalled(props) {
-    return props.installed_charts.includes(props.name.substring(props.name.lastIndexOf("/") + 1, props.name.length));
+    return props.installedCharts.includes(props.name.substring(props.name.lastIndexOf("/") + 1, props.name.length));
   }
 
   onButtonClick() {
@@ -66,34 +67,20 @@ class Chart extends React.Component {
 
   installChart() {
     this.setState({ installed: false, loading: true });
-    fetch('http://localhost:8080/api/v1/helm/charts', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        'chart_name': this.props.name,
-        'release_name': this.props.name.replace('stable/', '')
-      })
+    installChart({
+      'chart_name': this.props.name,
+      'release_name': this.props.name.replace('stable/', '')
     }).then((result) => {
-        this.setState({ installed: true, loading: false });
-    })
+      this.setState({ installed: true, loading: false });
+    });
   }
 
   deleteChart() {
     this.setState({ installed: true, loading: true });
-    fetch('http://localhost:8080/api/v1/helm/charts', {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        'release_name': this.props.name.replace('stable/', '')
-      })
+    deleteChart({
+      'release_name': this.props.name.replace('stable/', '')
     }).then((result) => {
-        this.setState({ installed: false, loading: false });
+      this.setState({ installed: false, loading: false });
     })
   }
 
@@ -102,10 +89,10 @@ class Chart extends React.Component {
     const icon = this.icons[this.props.name];
     const loadButton = <div><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</div>
     const body = <div>
-        <p className="card-text">{this.props.description}</p>
-        <button className={"btn btn-block " + (!installed ? 'btn-primary' : 'btn-danger') } onClick={this.onButtonClick}>
-          { loading ? loadButton  : !installed ? 'Install' : 'Delete' }
-        </button>
+      <p className="card-text">{this.props.description}</p>
+      <button className={"btn btn-block " + (!installed ? 'btn-primary' : 'btn-danger') } onClick={this.onButtonClick}>
+        { loading ? loadButton  : !installed ? 'Install' : 'Delete' }
+      </button>
     </div>;
 
     return <Card 
