@@ -7,15 +7,17 @@ from backend_svc.factories.deployments import DeploymentAPIResource
 
 
 class RestAPIResource(BaseFactory):
-	def __init__(self, parent, name):
-		super().__init__(parent, name)
-		self['v1'] = Version1APIResource(parent=self, name='v1')
+    def __init__(self, parent, name):
+        super().__init__(parent, name)
+        self['v1'] = Version1APIResource(parent=self, name='v1')
 
 class Version1APIResource(BaseFactory):
     def __init__(self, parent, name):
         super().__init__(parent, name)
         self['pods'] = PodAPIResource(parent=self, name='pods')
-        self['configmaps'] = ConfigmapAPIResource(parent=self, name='configmaps')
+        self['configmaps'] = ConfigmapAPIResource(
+            parent=self, name='configmaps')
         self['services'] = ServiceAPIResource(parent=self, name='services')
         self['helm'] = HelmAPIResource(parent=self, name='helm')
-        self['deployments'] = DeploymentAPIResource(parent=self, name='deployments')
+        self['deployments'] = DeploymentAPIResource(
+            parent=self, name='deployments')

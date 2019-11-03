@@ -20,7 +20,9 @@ class PodResource(dict):
         self.pod_name = pod_name
 
     def execute(self):
-        return self.request.services['pod'].by_name(self.namespace, self.pod_name)
+        return self.request.services['pod'].by_name(
+            self.namespace, self.pod_name)
 
     def delete(self):
-        return self.request.services['pod'].delete(self.namespace, self.pod_name)
+        return self.request.services['pod'].delete(
+            self.namespace, self.pod_name)

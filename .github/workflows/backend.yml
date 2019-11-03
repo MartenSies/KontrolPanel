@@ -29,3 +29,7 @@ jobs:
       run: |
         cd backend_svc
         python setup.py test
+    - name: Lint with pylint
+      run: |
+        cd backend_svc
+        python setup.py lint

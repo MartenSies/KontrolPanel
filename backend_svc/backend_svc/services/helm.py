@@ -1,4 +1,5 @@
-import subprocess, re
+import subprocess
+import re
 import logging
 
 log = logging.getLogger(__name__)
@@ -12,12 +13,14 @@ class HelmService:
         except OSError:
             log.info('Error install helm')
 
-    def _execute(self, command, *args):
+    @staticmethod
+    def _execute(command, *args):
         result = subprocess.run(
             ["helm", command, *args],
             universal_newlines=True,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
+            stderr=subprocess.PIPE,
+            check=True)
         if result.stderr:
             return result.stderr
         return result.stdout
@@ -26,7 +29,8 @@ class HelmService:
         return self._execute('delete', '--purge', params['release_name'])
 
     def install(self, params):
-        return self._execute('install', params['chart_name'], '--name', params['release_name'])
+        return self._execute(
+            'install', params['chart_name'], '--name', params['release_name'])
 
     def search(self, params):
         keyword = params.get('keyword', '')
@@ -35,19 +39,21 @@ class HelmService:
     def list_installed_charts(self):
         return self._to_json(self._execute('list'))
 
-    def _to_json(self, stdout):
+    @staticmethod
+    def _to_json(stdout):
         rows = stdout.split('\n')
-        headers = re.sub('  +', '', rows.pop(0)).replace(' ', '_').lower().split('\t')
+        headers = re.sub('  +', '', rows.pop(0))\
+            .replace(' ', '_').lower().split('\t')
 
         if len(rows) == 0:
             return []
 
         rows.pop() # remove the last item
-        charts = [];
+        charts = []
         for row in rows:
             chart = {}
             values = re.sub('  +', '', row).split('\t')
-            for i in range(len(headers)):
-                chart[headers[i]] = values[i] if i < len(values) else ''
+            for i, value in enumerate(headers):
+                chart[value] = values[i] if i < len(values) else ''
             charts.append(chart)
         return charts
