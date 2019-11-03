@@ -1,19 +1,30 @@
-import React from 'react';
+import * as React from 'react';
 
-import { deleteDeployment } from '../../helpers/Api'
+import { deleteDeployment } from '../../helpers/Api';
 import Modal from '../shared/Modal';
 import Button from '../shared/Button';
 import Form from '../shared/form/Form';
 import ExposeContainer from './ExposeContainer';
 import EditReplicas from './EditReplicas';
+import { Deployment, Container, Port } from '../../types/k8s';
 
+interface EditModalProps {
+  deployment: Deployment,
+}
 
-class EditModal extends React.Component {
+interface EditModalState {
+  containers: Container[],
+}
+
+class EditModal extends React.Component<EditModalProps, EditModalState> {
+  replicasRef: React.RefObject<EditReplicas>;
+  formRef: React.RefObject<Form>;
+
   constructor(props) {
     super(props);
 
-    this.replicasRef = React.createRef();
-    this.formRef = React.createRef();
+    this.replicasRef = React.createRef<EditReplicas>();
+    this.formRef = React.createRef<Form>();
 
     this.state = {
       containers: this.retrieveContainers(this.props)
@@ -23,7 +34,7 @@ class EditModal extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Readonly<EditModalProps>) {
     var newContainers = this.retrieveContainers(nextProps)
     if (this.state.containers !== newContainers) {
       this.setState({
@@ -33,13 +44,13 @@ class EditModal extends React.Component {
   }
 
   retrieveContainers(props) {
-    var containers = [];
+    let containers: Container[] = [];
     props.deployment.containers.forEach((container) => {
-      var ports = [];
+      let ports: Port[] = [];
       container.ports.forEach((port) => {
         ports.push({
-          targetPort: port.container_port,
-          localPort: this.getLocalPort(props, port.container_port),
+          targetPort: port.target_port,
+          localPort: port.local_port,
           localPortRef: React.createRef()
         });
       });
@@ -52,26 +63,15 @@ class EditModal extends React.Component {
     return containers;
   }
 
-  getLocalPort(props, targetPort) {
-    var localPort = ''
-    props.deployment.load_balancers.forEach(loadBalancer => {
-      loadBalancer.ports.forEach(port => {
-        if (port.target_port === targetPort) {
-          localPort = port.port
-        }
-      })
-    })
-    return localPort;
-  }
-
   onDelete() {
     deleteDeployment(this.props.deployment.name, this.props.deployment.namespace);
   }
 
-  onSubmit(e) {
-    e.preventDefault();
-    var formItems = React.Children.toArray(this.formRef.current.props.children).filter((item) => item.props.hasExecute);
+  onSubmit() {
+    // @ts-ignore
+    var formItems = React.Children.toArray(this.formRef.current!.props.children).filter((item) => item.props.hasExecute);
     formItems.forEach((item) => {
+      // @ts-ignore
       item.ref.current.execute(this.props.deployment.name, this.props.deployment.namespace);
     });
   }

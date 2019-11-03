@@ -1,15 +1,30 @@
-import React from 'react';
+import * as React from 'react';
 
 import { getDeployments } from '../../helpers/Api'
 import IsLoading from '../shared/IsLoading'
 import Header from '../shared/Header'
 import DeploymentCard from './DeploymentCard'
+import { Deployment } from '../../types/k8s';
 
-class Deployments extends React.Component {
-    constructor(props) {
+interface DeploymentsState {
+  error?: string,
+  isLoaded: boolean,
+  items: Namespace[],
+}
+
+interface Namespace {
+  name: string,
+  deployments: Deployment[],
+}
+
+class Deployments extends React.Component<{}, DeploymentsState> {
+  interval: number;  
+
+  constructor(props) {
     super(props);
+    this.interval = 0;
     this.state = {
-      error: null,
+      error: undefined,
       isLoaded: false,
       items: []
     };
@@ -18,18 +33,10 @@ class Deployments extends React.Component {
   retrieveData() {
     getDeployments().then(
         (result) => {
-          this.setState({
-            error: null,
-            isLoaded: true,
-            items: result
-          });
+          this.setState({ error: undefined, isLoaded: true, items: result });
         },
         (error) => {
-          this.setState({
-            items: [],
-            isLoaded: true,
-            error
-          });
+          this.setState({ items: [], isLoaded: true, error});
         }
       )
   }

@@ -1,4 +1,5 @@
 import logging
+from backend_svc.models.pod import Pod
 from backend_svc.services.k8s_service import K8SService
 from kubernetes import client
 
@@ -7,22 +8,9 @@ log = logging.getLogger(__name__)
 
 class PodService(K8SService):
 
-    def list(self):
-        data = []
-        namespaces = self.core_api.list_namespace(watch=False)
-        for namespace in namespaces.items:
-            item = { 'name': namespace.metadata.name, 'pods': [] }
-            pods = self.core_api.list_namespaced_pod(namespace.metadata.name, watch=False)
-            for pod in pods.items:
-                item['pods'].append({
-                    'ip': pod.status.pod_ip,
-                    'phase': pod.status.phase,
-                    'started_at': pod.status.start_time,
-                    'namespace': pod.metadata.namespace,
-                    'name': pod.metadata.name
-                })
-            data.append(item)
-        return data
+    def list(self, namespace, labels=''):
+        pods = self.core_api.list_namespaced_pod(namespace, label_selector=labels)
+        return [Pod.from_api(pod) for pod in pods.items]
 
     def by_name(self, namespace, name):
         pod = self.core_api.read_namespaced_pod(name, namespace)

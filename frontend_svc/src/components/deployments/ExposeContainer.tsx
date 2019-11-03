@@ -1,8 +1,19 @@
-import React from 'react';
+import * as React from 'react';
 import ExposePort from './ExposePort';
+import { Container } from '../../types/k8s';
 
+interface ExposeContainerProps {
+  labels: string,
+  container: Container
+  hasExecute?: boolean,
+  ref?: React.RefObject<any>,
+}
 
-class ExposeContainer extends React.Component {
+interface ExposeContainerState {
+  container: Container
+}
+
+class ExposeContainer extends React.Component<ExposeContainerProps, ExposeContainerState> {
   constructor(props) {
     super(props);
     this.state = {

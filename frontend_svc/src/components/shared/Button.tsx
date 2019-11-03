@@ -1,6 +1,15 @@
-import React from 'react';
+import * as React from 'react';
 
-class Button extends React.Component {
+interface ButtonProps {
+  styleName?: string,
+  isSecondary?: boolean,
+  isPrimary?: boolean,
+  isDanger?: boolean,
+  dismissModal?: boolean,
+  onClick?: () => void,
+}
+
+class Button extends React.Component<ButtonProps> {
   extraClassNames() {
   	var classNames = this.props.styleName ? 'btn ' + this.props.styleName : 'btn';
   	if (this.props.isSecondary) {
@@ -16,7 +25,9 @@ class Button extends React.Component {
   render() {
     var extraAttrs = this.props.dismissModal ? {'data-dismiss': 'modal'} : {};
     extraAttrs['className'] = this.extraClassNames();
-    extraAttrs['onClick'] = this.props.onClick ? this.props.onClick : '';
+    if (this.props.onClick) {
+      extraAttrs['onClick'] = this.props.onClick;
+    }
     return <button type="button" {...extraAttrs}>
       {this.props.children}
     </button>

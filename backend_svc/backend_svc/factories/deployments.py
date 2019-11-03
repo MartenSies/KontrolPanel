@@ -9,7 +9,7 @@ class DeploymentAPIResource(BaseFactory):
         return DeploymentResource(parent=self, name='deployment', deployment_name=deployment_name)
 
     def execute(self):
-        return self.services['deployment'].list()
+        return self.services['deployment'].list(self.services)
 
 
 class DeploymentResource(BaseFactory):
@@ -41,11 +41,12 @@ class DeploymentExposeResource(BaseFactory):
     def __init__(self, parent, name, deployment_name):
         super().__init__(parent, name)
         self.deployment_name = deployment_name
+        self.services = self.request.services
 
     def expose(self):
         namespace = getattr(self.request.params, "namespace", "default")
-        return self.request.services['deployment'].expose(namespace, self.deployment_name, self.request.json_body)
+        return self.services['deployment'].expose(self.services, namespace, self.deployment_name, self.request.json_body)
 
     def delete(self):
         namespace = getattr(self.request.params, "namespace", "default")
-        return self.request.services['deployment'].delete_expose(namespace, self.deployment_name, self.request.json_body)
+        return self.services['deployment'].delete_expose(self.services, namespace, self.deployment_name, self.request.json_body)

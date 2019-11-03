@@ -4,15 +4,15 @@ const DEFAULT_HEADERS = {
     'Content-Type': 'application/json',
 }
 
-function get(endpoint) {
+function get(endpoint: string) {
     return fetch(V1 + endpoint).then(res => res.json());
 }
 
-function del(endpoint) {
+function del(endpoint: string) {
     return fetch(V1 + endpoint, { method: 'DELETE' });
 }
 
-function delBody(endpoint, body) {
+function delBody(endpoint: string, body) {
     return fetch(V1 + endpoint, {
         method: 'DELETE',
         headers: DEFAULT_HEADERS,
@@ -20,7 +20,7 @@ function delBody(endpoint, body) {
     });
 }
 
-function post(endpoint, body) {
+function post(endpoint: string, body) {
     return fetch(V1 + endpoint, {
         method: 'POST',
         headers: DEFAULT_HEADERS,
@@ -28,7 +28,7 @@ function post(endpoint, body) {
     });
 }
 
-function patch(endpoint, body) {
+function patch(endpoint: string, body) {
     return fetch(V1 + endpoint, {
         method: 'PATCH',
         headers: DEFAULT_HEADERS,
@@ -36,7 +36,7 @@ function patch(endpoint, body) {
     });
 }
 
-export function getCharts(keyword) {
+export function getCharts(keyword: string) {
     return get('/helm/charts?keyword=' + keyword);
 }
 

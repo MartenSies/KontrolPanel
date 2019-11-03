@@ -1,11 +1,11 @@
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components'
 
 import { deletePod } from '../../helpers/Api'
 import Card from '../shared/Card'
 import EditModal from './EditModal'
-
 import { Trash } from 'react-feather';
+import { Deployment } from '../../types/k8s';
 
 const StyledListItem = styled.li`
     border-left: 0;
@@ -20,10 +20,13 @@ const StatusIcon = styled.span`
   display: inline-block;
 `
 
-class DeploymentCard extends React.Component {
-  constructor(props) {
-    super(props);
+interface DeploymentCardProps {
+  deployment: Deployment,
+}
 
+class DeploymentCard extends React.Component<DeploymentCardProps> {
+  constructor(props: Readonly<DeploymentCardProps>) {
+    super(props);
     this.handleClick = this.handleClick.bind(this);
   }
 

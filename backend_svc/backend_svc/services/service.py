@@ -1,5 +1,6 @@
 import logging
 
+from backend_svc.models.load_balancer import LoadBalancer
 from backend_svc.services.k8s_service import K8SService
 
 log = logging.getLogger(__name__)
@@ -7,22 +8,30 @@ log = logging.getLogger(__name__)
 
 class ServiceService(K8SService):
 
-    def list(self):
-        data = []
-        namespaces = self.core_api.list_namespace(watch=False)
-        for namespace in namespaces.items:
-            item = { 'name': namespace.metadata.name, 'services': [] }
-            services = self.core_api.list_namespaced_service(namespace.metadata.name, watch=False)
-            for service in services.items:
-                external_ip = None if service.spec.type != 'LoadBalancer' else service.status.load_balancer.ingress[0].hostname
-                item['services'].append({
-                    'name': service.metadata.name,
-                    'namespace': service.metadata.namespace,
-                    'type': service.spec.type,
-                    'ports': service.spec.ports,
-                    'selector': service.spec.selector,
-                    'cluster_ip': service.spec.cluster_ip,
-                    'external_ip': external_ip
-                })
-            data.append(item)
-        return data
+    def list_load_balancers(self, namespace, labels=''):
+        services = self.core_api.list_namespaced_service(namespace, label_selector=labels)
+        return [LoadBalancer.from_api(s) for s in services.items if s.spec.type == 'LoadBalancer']
+
+    def create_load_balancer(self, name, namespace, labels, local_port, target_port):
+        body = {
+          "kind": "Service",
+          "apiVersion": "v1",
+          "metadata": {
+            "name": name,
+            "namespace": namespace,
+            "labels": labels
+          },
+          "spec": {
+            "ports": [{
+              "port": local_port,
+              "targetPort": target_port
+            }],
+            "selector": labels,
+            "type": "LoadBalancer"
+          }
+        }
+        return self.core_api.create_namespaced_service(namespace, body)
+
+    def delete_load_balancer(self, name, namespace):
+        return self.core_api.delete_namespaced_service(name, namespace)
+

@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import * as React from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Deployments from './deployments/Deployments';
 import Helm from './helm/Helm';

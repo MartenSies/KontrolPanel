@@ -1,7 +1,14 @@
-import React from 'react';
+import * as React from 'react';
 
+interface ModalProps {
+  id: string,
+  title: string,
+  body: JSX.Element,
+  footerLeft: JSX.Element,
+  footerRight: JSX.Element,
+}
 
-class Modal extends React.Component {
+class Modal extends React.Component<ModalProps> {
   render() {
     return <div id={this.props.id} className="modal fade">
       <div className="modal-dialog" role="document">
