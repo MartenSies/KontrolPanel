@@ -25,11 +25,15 @@ jobs:
         cd backend_svc
         python -m pip install --upgrade pip
         pip install -e .
-    - name: Test with pytest
+    - name: Run tests
       run: |
         cd backend_svc
         python setup.py test
-    - name: Lint with pylint
+    - name: Run linting
       run: |
         cd backend_svc
         python setup.py lint
+    - name: Run type linting
+      run: |
+        cd backend_svc
+        python setup.py type

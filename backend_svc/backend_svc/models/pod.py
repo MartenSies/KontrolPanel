@@ -1,5 +1,5 @@
 class Pod:
-    def __init__(self, name, status):
+    def __init__(self, name: str, status: str):
         self.name = name
         self.status = status
 

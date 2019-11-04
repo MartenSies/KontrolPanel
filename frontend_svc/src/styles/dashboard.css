@@ -8,6 +8,55 @@ body {
   vertical-align: text-bottom;
 }
 
+
+/*
+ * Cards
+ */
+@media (min-width: 576px) {
+  #deployments.card-columns {
+    column-count: 1;
+  }
+  #charts.card-columns {
+    column-count: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  #deployments.card-columns {
+    column-count: 1;
+  }
+  #charts.card-columns {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 992px) {
+  #deployments.card-columns {
+    column-count: 2;
+  }
+  #charts.card-columns {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1200px) {
+  #deployments.card-columns {
+    column-count: 3;
+  }
+  #charts.card-columns {
+    column-count: 4;
+  }
+}
+
+@media (min-width: 2560px) {
+  #deployments.card-columns {
+    column-count: 5;
+  }
+  #charts.card-columns {
+    column-count: 6;
+  }
+}
+
 /*
  * Sidebar
  */

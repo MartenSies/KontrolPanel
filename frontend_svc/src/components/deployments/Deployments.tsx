@@ -71,9 +71,9 @@ class Deployments extends React.Component<{}, DeploymentsState> {
         <div>
             <Header title="Deployments" />
             {items.filter(n => n.deployments.length > 0).map((namespace, ni) => {
-              return <div key={ni} className="">
+              return <div key={ni}>
                   <h5>{namespace['name']} ({namespace.deployments.length})</h5>
-                  <div className="card-columns">
+                  <div id="deployments" className="card-columns">
                       {namespace.deployments.map((deployment, di) => {
                         return <DeploymentCard key={di} deployment={deployment}/>
                       })}

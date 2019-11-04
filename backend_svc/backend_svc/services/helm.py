@@ -13,18 +13,6 @@ class HelmService:
         except OSError:
             log.info('Error install helm')
 
-    @staticmethod
-    def _execute(command, *args):
-        result = subprocess.run(
-            ["helm", command, *args],
-            universal_newlines=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            check=True)
-        if result.stderr:
-            return result.stderr
-        return result.stdout
-
     def delete(self, params):
         return self._execute('delete', '--purge', params['release_name'])
 
@@ -38,6 +26,18 @@ class HelmService:
 
     def list_installed_charts(self):
         return self._to_json(self._execute('list'))
+
+    @staticmethod
+    def _execute(command, *args):
+        result = subprocess.run(
+            ["helm", command, *args],
+            universal_newlines=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=True)
+        if result.stderr:
+            return result.stderr
+        return result.stdout
 
     @staticmethod
     def _to_json(stdout):

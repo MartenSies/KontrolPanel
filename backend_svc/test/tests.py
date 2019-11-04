@@ -1,12 +1,8 @@
-from unittest import TestCase, mock
+from unittest import TestCase
+from backend_svc.models.label import Label
 
 
-class DeploymentServiceTests(TestCase):
-
-    @mock.patch(
-    	'backend_svc.services.deployment.DeploymentService.__init__', mock.Mock(return_value=None))
+class LabelTests(TestCase):
     def test_formatting_labels(self):
-        from backend_svc.services.deployment import DeploymentService
-        deployment_service = DeploymentService()
-        labels = deployment_service._format_labels({'app': 'kontrolpanel'})
-        self.assertEqual(labels, 'app=kontrolpanel')
+        label = Label('app', 'kontrolpanel')
+        self.assertEqual(label.to_string(), 'app=kontrolpanel')

@@ -87,7 +87,7 @@ class Helm extends React.Component<HelmProps, Helmstate> {
             </form>
           </div>
 
-          <div className="card-columns" style={{ columnCount: 4}}>
+          <div id="charts" className="card-columns">
             {charts.map((chart, i) => {
               return <Chart key={i} installedCharts={installedCharts} name={chart.name} description={chart.description} />
             })}

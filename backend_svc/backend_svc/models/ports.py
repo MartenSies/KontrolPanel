@@ -1,5 +1,5 @@
 class Ports:
-    def __init__(self, local_port, target_port):
+    def __init__(self, local_port: int, target_port: int):
         self.local_port = local_port
         self.target_port = target_port
 

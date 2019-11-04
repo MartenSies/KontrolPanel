@@ -9,5 +9,6 @@ RUN npm install react-scripts@3.0.1 -g --silent
 
 COPY src /app/src
 COPY public /app/public
+COPY tsconfig.json tsconfig.json
 
 CMD ["npm", "start"]

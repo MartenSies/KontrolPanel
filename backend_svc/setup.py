@@ -28,7 +28,7 @@ test_requires = [
     'mypy >= 0.740',
 ]
 
-class PyTest(Command):
+class Test(Command):
     user_options = []
 
     def initialize_options(self):
@@ -47,7 +47,7 @@ class PyTest(Command):
         raise sys.exit(errno)
 
 
-class PyLint(Command):
+class Linting(Command):
     user_options = []
 
     def initialize_options(self):
@@ -57,15 +57,32 @@ class PyLint(Command):
         pass
 
     def run(self):
-        subprocess.call(['pylint', '--rcfile', 'pylintrc', '--output-format', 'parseable', 'backend_svc'])
+        subprocess.call(['pylint',
+                         '--rcfile', 'pylintrc',
+                         '--output-format', 'parseable',
+                         'backend_svc'])
 
+class TypeLinting(Command):
+    user_options = []
+
+    def initialize_options(self):
+        subprocess.call(['pip', 'install'] + test_requires)
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        subprocess.call(['mypy',
+                         '--ignore-missing-imports',
+                         '--follow-imports=skip',
+                         'backend_svc'])
 
 setup(
     name='backend_svc',
     version='0.0',
     description='backend-svc',
     long_description=README + '\n\n' + CHANGES,
-    cmdclass={'test': PyTest, 'lint': PyLint},
+    cmdclass={'test': Test, 'lint': Linting, 'type': TypeLinting},
     packages=find_packages(),
     tests_require=test_requires,
     install_requires=requires,

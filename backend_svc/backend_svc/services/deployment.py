@@ -1,32 +1,43 @@
+from typing import Dict, List
+
 from backend_svc.models.container import Container
+from backend_svc.models.deployment import Deployment
+from backend_svc.models.label import Label
 from backend_svc.services.k8s_service import K8SService
 
 class DeploymentService(K8SService):
 
     def list(self, services):
         data = []
-        namespaces = self.core_api.list_namespace()
-        for namespace in namespaces.items:
-            item = {'name': namespace.metadata.name, 'deployments': []}
-            deployments = self.apps_v1_api.list_namespaced_deployment(
-                namespace.metadata.name, watch=False)
-            for deployment in deployments.items:
-                labels = self._format_labels(
-                    deployment.spec.template.metadata.labels)
-                item['deployments'].append({
-                    'pods': services['pod'].list(
-                        namespace.metadata.name, labels),
-                    'namespace': deployment.metadata.namespace,
-                    'name': deployment.metadata.name,
-                    'replicas': deployment.spec.replicas,
-                    'labels': deployment.spec.template.metadata.labels,
-                    'containers': self.list_containers(
-                        deployment.spec.template.spec.containers,
-                        services['service'].list_load_balancers(
-                            namespace.metadata.name, labels)),
-                })
-            data.append(item)
+        namespaces = services['namespace'].list()
+        for namespace in namespaces:
+            data.append({
+                'name': namespace.name,
+                'deployments': self.list_by_namespace(services, namespace)
+            })
         return data
+
+    def list_by_namespace(self, services, namespace) -> List[Deployment]:
+        api_list = self.apps_v1_api.list_namespaced_deployment(
+            namespace.name)
+
+        deployments = []
+        for item in api_list.items:
+            labels = Label.list_from_deployment(item)
+            load_balancers = services['service'].list_load_balancers(
+                namespace.name, labels)
+
+            deployment = Deployment(
+                pods=services['pod'].list(namespace.name, labels),
+                namespace=namespace.name,
+                name=item.metadata.name,
+                replicas=item.spec.replicas,
+                labels=item.spec.template.metadata.labels,
+                containers=Container.from_lists(
+                    item, load_balancers)
+            )
+            deployments.append(deployment)
+        return deployments
 
     def delete(self, namespace, name):
         return self.apps_v1_api.delete_namespaced_deployment(name, namespace)
@@ -38,35 +49,15 @@ class DeploymentService(K8SService):
             name, namespace, body)
 
     @staticmethod
-    def expose(services, namespace, name, params):
+    def expose(services, namespace_name: str, name: str, params: Dict):
         return services['service'].create_load_balancer(
             name=f"{params.get('name', name)}-service",
-            namespace=namespace,
+            namespace_name=namespace_name,
             labels=params.get('selector', {}),
             local_port=params['port']['local'],
             target_port=params['port']['target'])
 
     @staticmethod
-    def delete_expose(services, namespace, name, params):
+    def delete_expose(services, namespace_name: str, name: str, params: Dict):
         return services['service'].delete_load_balancer(
-            f"{params.get('name', name)}-service", namespace)
-
-    @staticmethod
-    def _format_labels(api_labels):
-        labels = ''
-        for key, value in api_labels.items():
-            labels += f'{key}={value},'
-        return labels[:-1]
-
-    @staticmethod
-    def list_containers(api_containers, load_balancers):
-        containers = []
-        for c in api_containers:
-            container = Container.from_api_container(c)
-            for lb in load_balancers:
-                for p in lb.ports:
-                    for cp in container.ports:
-                        if p.target_port == cp.target_port:
-                            cp.local_port = p.local_port
-            containers.append(container)
-        return containers
+            f"{params.get('name', name)}-service", namespace_name)
